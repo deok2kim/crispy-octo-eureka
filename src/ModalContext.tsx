@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
+import "./Modal.css";
 
 type FormData = {
   name: string;
@@ -97,12 +98,19 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
   } = useForm<FormData>();
 
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  // 모달이 열릴 때 제목으로 포커스 이동
+  // 모달이 열릴 때 애니메이션과 포커스 관리
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAnimating(true);
+    }, 10);
+
     if (titleRef.current) {
       titleRef.current.focus();
     }
+
+    return () => clearTimeout(timer);
   }, []);
 
   // ESC 키로 모달 닫기
@@ -151,6 +159,7 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
 
   return (
     <div
+      className={`modal-overlay ${isAnimating ? "modal-overlay--open" : ""}`}
       style={{
         position: "fixed",
         top: 0,
@@ -170,6 +179,7 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
       aria-describedby="modal-description"
     >
       <div
+        className={`modal-content ${isAnimating ? "modal-content--open" : ""}`}
         style={{
           backgroundColor: "white",
           padding: "2rem",
