@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
@@ -10,7 +16,9 @@ type FormData = {
 };
 
 type ModalContextType = {
-  openFormModal: () => Promise<FormData | null>;
+  openFormModal: (
+    triggerElement?: HTMLElement | null
+  ) => Promise<FormData | null>;
 };
 
 const ModalContext = createContext<ModalContextType | null>(null);
@@ -24,9 +32,15 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   const [resolvePromise, setResolvePromise] = useState<
     ((value: FormData | null) => void) | null
   >(null);
+  const [triggerElement, setTriggerElement] = useState<HTMLElement | null>(
+    null
+  );
 
-  const openFormModal = (): Promise<FormData | null> => {
+  const openFormModal = (
+    triggerEl?: HTMLElement | null
+  ): Promise<FormData | null> => {
     return new Promise<FormData | null>((resolve) => {
+      setTriggerElement(triggerEl || null);
       setResolvePromise(() => resolve);
       setIsOpen(true);
     });
@@ -37,6 +51,12 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     if (resolvePromise) {
       resolvePromise(result);
       setResolvePromise(null);
+    }
+
+    // 트리거 요소로 포커스 되돌리기
+    if (triggerElement) {
+      triggerElement.focus();
+      setTriggerElement(null);
     }
   };
 
@@ -75,6 +95,15 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
+  // 모달이 열릴 때 제목으로 포커스 이동
+  useEffect(() => {
+    if (titleRef.current) {
+      titleRef.current.focus();
+    }
+  }, []);
 
   // ESC 키로 모달 닫기
   useEffect(() => {
@@ -146,7 +175,9 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
           overflow: "auto",
         }}
       >
-        <h2>신청 폼</h2>
+        <h2 ref={titleRef} tabIndex={-1}>
+          신청 폼
+        </h2>
         <p>이메일과 FE 경력 연차 등 간단한 정보를 입력해주세요.</p>
         {/* 스크롤 테스트용 콘텐츠 */}
         <div style={{ marginTop: "2rem" }}>

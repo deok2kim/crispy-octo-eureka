@@ -1,17 +1,21 @@
 import { useModal } from "./ModalContext";
+import { useRef } from "react";
 
 export default function ModalForm() {
   const { openFormModal } = useModal();
+  const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleOpenModal = async () => {
-    const result = await openFormModal();
+    const result = await openFormModal(triggerButtonRef.current);
 
     console.log(result);
   };
 
   return (
     <div style={{ padding: "2rem" }}>
-      <button onClick={handleOpenModal}>🚀 신청 폼 작성하기</button>
+      <button ref={triggerButtonRef} onClick={handleOpenModal}>
+        🚀 신청 폼 작성하기
+      </button>
 
       {/* 스크롤 테스트용 콘텐츠 */}
       <div style={{ marginTop: "2rem" }}>
