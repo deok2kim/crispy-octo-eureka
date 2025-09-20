@@ -1,0 +1,31 @@
+.modal-overlay {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.modal-overlay.modal-overlay--open {
+  opacity: 1;
+}
+
+.modal-content {
+  transform: scale(0.9) translateY(-20px);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.modal-content.modal-content--open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* prefers-reduced-motion: 애니메이션 줄이기 설정 시 애니메이션 비활성화 */
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-content {
+    transition: none;
+  }
+
+  .modal-content {
+    transform: none;
+  }
+}
