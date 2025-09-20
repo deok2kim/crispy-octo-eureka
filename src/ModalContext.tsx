@@ -91,6 +91,24 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
     };
   }, [onCancel]);
 
+  // 배경 스크롤 방지
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body);
+    const originalOverflow = originalStyle.overflow;
+    const originalPaddingRight = originalStyle.paddingRight;
+
+    const scrollBarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.paddingRight = `${scrollBarWidth}px`;
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+    };
+  }, []);
+
   const onFormSubmit = (data: FormData) => {
     onSubmit(data);
   };
