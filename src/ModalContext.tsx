@@ -113,6 +113,13 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
     onSubmit(data);
   };
 
+  // 배경 클릭으로 모달 닫기
+  const handleOverlayClick = (event: React.MouseEvent) => {
+    if (event.target === event.currentTarget) {
+      onCancel();
+    }
+  };
+
   return (
     <div
       style={{
@@ -127,6 +134,7 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
         justifyContent: "center",
         zIndex: 1000,
       }}
+      onClick={handleOverlayClick}
     >
       <div
         style={{
