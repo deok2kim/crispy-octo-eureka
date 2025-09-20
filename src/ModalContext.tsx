@@ -164,6 +164,10 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
         zIndex: 1000,
       }}
       onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
     >
       <div
         style={{
@@ -175,10 +179,12 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
           overflow: "auto",
         }}
       >
-        <h2 ref={titleRef} tabIndex={-1}>
+        <h2 ref={titleRef} tabIndex={-1} id="modal-title">
           신청 폼
         </h2>
-        <p>이메일과 FE 경력 연차 등 간단한 정보를 입력해주세요.</p>
+        <p id="modal-description">
+          이메일과 FE 경력 연차 등 간단한 정보를 입력해주세요.
+        </p>
         {/* 스크롤 테스트용 콘텐츠 */}
         <div style={{ marginTop: "2rem" }}>
           <h2>스크롤 테스트용 콘텐츠</h2>
@@ -194,8 +200,11 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
 
         <form onSubmit={handleSubmit(onFormSubmit)}>
           <div style={{ marginBottom: "1rem" }}>
-            <label style={{ display: "block" }}>이름 / 닉네임 *</label>
+            <label htmlFor="name-input" style={{ display: "block" }}>
+              이름 / 닉네임 *
+            </label>
             <input
+              id="name-input"
               type="text"
               {...register("name", {
                 required: "이름을 입력해주세요",
@@ -205,13 +214,22 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
                 },
               })}
               style={{ width: "100%" }}
+              aria-invalid={errors.name ? "true" : "false"}
+              aria-describedby={errors.name ? "name-error" : undefined}
             />
-            {errors.name && <div>{errors.name.message}</div>}
+            {errors.name && (
+              <div id="name-error" role="alert" aria-live="polite">
+                {errors.name.message}
+              </div>
+            )}
           </div>
 
           <div style={{ marginBottom: "1rem" }}>
-            <label style={{ display: "block" }}>이메일 *</label>
+            <label htmlFor="email-input" style={{ display: "block" }}>
+              이메일 *
+            </label>
             <input
+              id="email-input"
               type="email"
               {...register("email", {
                 required: "이메일을 입력해주세요",
@@ -221,29 +239,49 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
                 },
               })}
               style={{ width: "100%" }}
+              aria-invalid={errors.email ? "true" : "false"}
+              aria-describedby={errors.email ? "email-error" : undefined}
             />
-            {errors.email && <div>{errors.email.message}</div>}
+            {errors.email && (
+              <div id="email-error" role="alert" aria-live="polite">
+                {errors.email.message}
+              </div>
+            )}
           </div>
 
           <div style={{ marginBottom: "1rem" }}>
-            <label style={{ display: "block" }}>FE 경력 연차 *</label>
+            <label htmlFor="experience-select" style={{ display: "block" }}>
+              FE 경력 연차 *
+            </label>
             <select
+              id="experience-select"
               {...register("experience", {
                 required: "경력 연차를 선택해주세요",
               })}
               style={{ width: "100%" }}
+              aria-invalid={errors.experience ? "true" : "false"}
+              aria-describedby={
+                errors.experience ? "experience-error" : undefined
+              }
             >
               <option value="">선택해주세요</option>
               <option value="0-3년">0-3년</option>
               <option value="4-7년">4-7년</option>
               <option value="8년 이상">8년 이상</option>
             </select>
-            {errors.experience && <div>{errors.experience.message}</div>}
+            {errors.experience && (
+              <div id="experience-error" role="alert" aria-live="polite">
+                {errors.experience.message}
+              </div>
+            )}
           </div>
 
           <div style={{ marginBottom: "1rem" }}>
-            <label style={{ display: "block" }}>GitHub 링크 (선택)</label>
+            <label htmlFor="github-input" style={{ display: "block" }}>
+              GitHub 링크 (선택)
+            </label>
             <input
+              id="github-input"
               type="url"
               {...register("github", {
                 pattern: {
@@ -254,8 +292,14 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
               })}
               style={{ width: "100%" }}
               placeholder="https://github.com/username"
+              aria-invalid={errors.github ? "true" : "false"}
+              aria-describedby={errors.github ? "github-error" : undefined}
             />
-            {errors.github && <div>{errors.github.message}</div>}
+            {errors.github && (
+              <div id="github-error" role="alert" aria-live="polite">
+                {errors.github.message}
+              </div>
+            )}
           </div>
 
           <div>
