@@ -1,6 +1,12 @@
+import { ModalProvider } from "./ModalContext";
+import ModalForm from "./ModalForm";
+
 const ModalFormPage = () => {
-  /* 여기에 구현해 주세요 */
-  return <div>ModalFormPage</div>;
+  return (
+    <ModalProvider>
+      <ModalForm />
+    </ModalProvider>
+  );
 };
 
 export default ModalFormPage;
