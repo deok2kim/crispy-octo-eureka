@@ -98,6 +98,7 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
   } = useForm<FormData>();
 
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
   // 모달이 열릴 때 애니메이션과 포커스 관리
@@ -113,11 +114,35 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  // ESC 키로 모달 닫기
+  // ESC 키로 모달 닫기 + Tab 트랩
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onCancel();
+        return;
+      }
+
+      if (event.key === "Tab" && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[
+          focusableElements.length - 1
+        ] as HTMLElement;
+
+        if (event.shiftKey) {
+          if (document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement?.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement?.focus();
+          }
+        }
       }
     };
 
@@ -179,6 +204,7 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
       aria-describedby="modal-description"
     >
       <div
+        ref={modalRef}
         className={`modal-content ${isAnimating ? "modal-content--open" : ""}`}
         style={{
           backgroundColor: "white",
