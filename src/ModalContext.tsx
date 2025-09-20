@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
@@ -75,6 +75,21 @@ const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+
+  // ESC 키로 모달 닫기
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onCancel();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onCancel]);
 
   const onFormSubmit = (data: FormData) => {
     onSubmit(data);
