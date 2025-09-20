@@ -1,17 +1,10 @@
 import { useModal } from "./ModalContext";
 
-type FormData = {
-  name: string;
-  email: string;
-  experience: string;
-  github: string;
-};
-
 export default function ModalForm() {
   const { openFormModal } = useModal();
 
   const handleOpenModal = async () => {
-    const result = await openFormModal<FormData>();
+    const result = await openFormModal();
 
     console.log(result);
   };

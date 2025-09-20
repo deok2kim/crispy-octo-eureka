@@ -2,8 +2,15 @@ import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
+type FormData = {
+  name: string;
+  email: string;
+  experience: string;
+  github: string;
+};
+
 type ModalContextType = {
-  openFormModal: <T = any>() => Promise<T | null>;
+  openFormModal: () => Promise<FormData | null>;
 };
 
 const ModalContext = createContext<ModalContextType | null>(null);
@@ -15,17 +22,17 @@ type ModalProviderProps = {
 export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [resolvePromise, setResolvePromise] = useState<
-    ((value: any) => void) | null
+    ((value: FormData | null) => void) | null
   >(null);
 
-  const openFormModal = <T = any,>(): Promise<T | null> => {
-    return new Promise<T | null>((resolve) => {
+  const openFormModal = (): Promise<FormData | null> => {
+    return new Promise<FormData | null>((resolve) => {
       setResolvePromise(() => resolve);
       setIsOpen(true);
     });
   };
 
-  const closeModal = (result: any = null) => {
+  const closeModal = (result: FormData | null = null) => {
     setIsOpen(false);
     if (resolvePromise) {
       resolvePromise(result);
@@ -33,7 +40,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     }
   };
 
-  const handleSubmit = (formData: any) => {
+  const handleSubmit = (formData: FormData) => {
     closeModal(formData);
   };
 
@@ -58,15 +65,8 @@ export const useModal = () => {
 };
 
 type FormModalProps = {
-  onSubmit: (data: any) => void;
+  onSubmit: (data: FormData) => void;
   onCancel: () => void;
-};
-
-type FormData = {
-  name: string;
-  email: string;
-  experience: string;
-  github: string;
 };
 
 const FormModal: React.FC<FormModalProps> = ({ onSubmit, onCancel }) => {
